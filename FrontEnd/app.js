@@ -28,6 +28,7 @@ async function fetchCategoriesData() {
 async function displayCategories() {
     await fetchCategoriesData()
     const ul = document.createElement("ul");
+    ul.classList = "filters-container"
     const baseFilter = {name : "Tous", id : "all"}
 
     //Fonction pour la création d'un bouton de filtre dans le portfolio

@@ -1,5 +1,7 @@
 const portfolio = document.getElementById("portfolio");
 const galleryContainer = document.querySelector("#portfolio .gallery");
+const loginNav = document.getElementById("login-nav");
+let token = window.localStorage.getItem("token");
 let activeFilter;
 let worksData;
 let worksDatalength;
@@ -7,6 +9,28 @@ let categoriesData;
 
 
 const filters = new Set();
+
+function isLog() {
+    if (token) {
+        loginNav.textContent = "log out";
+    } else {
+        loginNav.textContent = "log in";
+    }
+}
+
+isLog();
+
+loginNav.addEventListener("click", () => {
+    if(token) {        
+        window.localStorage.removeItem("token")
+        loginNav.textContent = "log in";
+        token = null;
+    }
+    else {
+        window.location.href = 'login.html';
+    }
+
+})
 
 // Fonction de récupération des données works de l'api
 async function fetchWorksData() {

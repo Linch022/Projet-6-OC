@@ -8,20 +8,23 @@ let activeFilter;
 let worksData;
 let worksDatalength;
 let categoriesData;
+const filtersContainer = document.getElementById("filters-container");
 
 
 const filters = new Set();
 
 function isLog() {
-    console.log(adminMode);
     
     if (token) {
         loginNav.textContent = "log out";
         adminMode.forEach((e) => e.style.display = "flex");
+        filtersContainer.style.display = "none";
         body.style.paddingTop = "60px";
     } else {
         loginNav.textContent = "log in";
         adminMode.forEach((e) => e.style.display = "none");
+        filtersContainer.style.display = "flex";
+        
     }
 }
 
@@ -33,6 +36,7 @@ loginNav.addEventListener("click", () => {
         loginNav.textContent = "log in";
         adminMode.forEach((e) => e.style.display = "none");
         body.style.paddingTop = "0";
+        filtersContainer.style.display = "flex";
         token = null;
     }
     else {
@@ -59,10 +63,9 @@ async function fetchCategoriesData() {
 
 // Fonction création du bloc contenant les filtres dans le portfolio
 async function displayCategories() {
-    await fetchCategoriesData()
-    const ul = document.createElement("ul");
-    ul.classList = "filters-container"
-    const baseFilter = {name : "Tous", id : "all"}
+    await fetchCategoriesData();
+    filtersContainer.classList = "filters-container";
+    const baseFilter = {name : "Tous", id : "all"};
 
     //Fonction pour la création d'un bouton de filtre dans le portfolio
     function createFilter(filter) {
@@ -76,20 +79,16 @@ async function displayCategories() {
         changeFilter(button, filter.id);
     })
     li.appendChild(button);
-    ul.appendChild(li);
+    filtersContainer.appendChild(li);
 }
 createFilter(baseFilter)
 categoriesData.map((item) => {
     createFilter(item);
 });
-console.log(filters);
 
-portfolio.appendChild(ul);
+portfolio.appendChild(filtersContainer);
 activeFilter = document.querySelector("#portfolio .active-filter");
 };
-
-displayCategories();
-
 
 function changeFilter(button, filterId) {
     activeFilter.classList.remove("active-filter");
@@ -107,7 +106,7 @@ function changeFilter(button, filterId) {
     filterGallery();
 };
 
-
+displayCategories();
 // Fonction permettant l'affichage et le filtrage des works
 function filterGallery() {
 
@@ -140,8 +139,6 @@ function filterGallery() {
 async function displayGallery() {
     await fetchWorksData();
     filterGallery();
-    console.log(worksData);
-    console.log(worksDatalength);
 }
 
 displayGallery()

@@ -53,6 +53,7 @@ table {
 body {
 	max-width: 1140px;
 	margin:auto;
+	padding-top: 60px;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
@@ -103,12 +104,16 @@ li:hover {
 	color: #B1663C;
 }
 #admin-mode {
+	position: absolute;
+	left: 0;
+	top: 0;
 	height: 60px;
 	background-color: black;
 	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 100vw;
 }
 
 #introduction {

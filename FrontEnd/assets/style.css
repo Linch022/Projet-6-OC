@@ -53,7 +53,6 @@ table {
 body {
 	max-width: 1140px;
 	margin:auto;
-	padding-top: 60px;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
@@ -103,7 +102,7 @@ nav li {
 li:hover {
 	color: #B1663C;
 }
-#admin-mode {
+.admin-bar {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -153,8 +152,8 @@ li:hover {
 	margin-bottom: 1em;
 	order: 1;
 }
-#portfolio > h2 > span {
-	display: flex;
+#portfolio > h2 > .admin-mode {
+	display: none;
 	gap: 10px;
 	color: black;
 	font-size: 14px;

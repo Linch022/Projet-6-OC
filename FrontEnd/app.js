@@ -1,6 +1,8 @@
 const portfolio = document.getElementById("portfolio");
 const galleryContainer = document.querySelector("#portfolio .gallery");
 const loginNav = document.getElementById("login-nav");
+const adminMode = document.querySelectorAll(".admin-mode");
+const body = document.querySelector("body");
 let token = window.localStorage.getItem("token");
 let activeFilter;
 let worksData;
@@ -11,10 +13,15 @@ let categoriesData;
 const filters = new Set();
 
 function isLog() {
+    console.log(adminMode);
+    
     if (token) {
         loginNav.textContent = "log out";
+        adminMode.forEach((e) => e.style.display = "flex");
+        body.style.paddingTop = "60px";
     } else {
         loginNav.textContent = "log in";
+        adminMode.forEach((e) => e.style.display = "none");
     }
 }
 
@@ -24,6 +31,8 @@ loginNav.addEventListener("click", () => {
     if(token) {        
         window.localStorage.removeItem("token")
         loginNav.textContent = "log in";
+        adminMode.forEach((e) => e.style.display = "none");
+        body.style.paddingTop = "0";
         token = null;
     }
     else {

@@ -17,10 +17,6 @@ function isLog() {
 }
 isLog();
 
-loginNav.addEventListener("click", () => {
-    window.location.href = 'login.html';
-})
-
 projectNav.addEventListener("click", () => {
     window.location.href = 'index.html';
 })

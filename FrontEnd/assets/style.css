@@ -36,6 +36,7 @@ ol, ul {
 }
 a {
 	color: black;
+	text-decoration: none;
 }
 blockquote, q {
 	quotes: none;
@@ -99,9 +100,18 @@ nav li {
 	font-size: 1.2em;
 }
 
-li:hover {
+nav li button {
+	cursor: pointer;
+	font-family: 'Work Sans';
+	background: none;
+	border: none;
+	font-size: 1em;
+}
+
+li:hover, li a:hover, li button:hover {
 	color: #B1663C;
 }
+
 .admin-bar {
 	position: absolute;
 	left: 0;
@@ -109,7 +119,7 @@ li:hover {
 	height: 60px;
 	background-color: black;
 	color: white;
-	display: flex;
+	display: none;
 	justify-content: center;
 	align-items: center;
 	width: 100vw;
@@ -152,7 +162,8 @@ li:hover {
 	margin-bottom: 1em;
 	order: 1;
 }
-#portfolio > h2 > .admin-mode {
+
+.admin-works-button {
 	display: none;
 	cursor: pointer;
 	gap: 10px;
@@ -223,7 +234,7 @@ li:hover {
 	flex-direction: column;
 }
 
-#contact input, #login-form input {
+#contact input, #login-form input, #modal input {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
@@ -266,13 +277,35 @@ footer nav ul {
 	flex: 1;
 }
 
-#login-page .login-error {
+#login-page input.login-error {
 	border: 1px solid red;
 }
 
 #login-page #login-text-error {
+	opacity: 0;
 	color: red;
 	text-align: center;
 	margin-top: 4px;
-	opacity: 0;
+}
+#login-page #login-text-error.login-error {
+	opacity: 1;
+}
+
+#modal input {
+ 	width: 237px;
+}
+
+#logout-button {
+	display: none;
+}
+.admin-bar.admin-mode, .admin-works-button.admin-mode, #logout-button.admin-mode {
+	display: flex;
+}
+
+body.admin-mode {
+	padding-top: 60px;
+}
+
+#filters-container.admin-mode, #login-nav.admin-mode {
+	display: none;
 }

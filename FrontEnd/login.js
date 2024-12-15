@@ -1,28 +1,12 @@
-const loginNav = document.getElementById("login-nav");
-const projectNav = document.getElementById("project-nav");
-const submitLogin = document.getElementById("submit-login");
-const formLogin = document.querySelector("#login-form form");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+const logsInput = {email : document.getElementById("email"), password : document.getElementById("password") }
 const textLogin = document.getElementById("login-text-error");
-let token = window.localStorage.getItem("token");
+let userToken = window.sessionStorage.getItem("token");
 
-function isLog() {
-    if (token) {
-        loginNav.textContent = "log out";
-    } else {
-        loginNav.textContent = "log in";
-    }
-    
-}
-isLog();
-
-projectNav.addEventListener("click", () => {
+if (userToken)  {
     window.location.href = 'index.html';
-})
+}
 
 async function testLogin(user) {
-    console.log(JSON.stringify(user));
     
     try {
         const response = await fetch("http://localhost:5678/api/users/login", {
@@ -35,31 +19,35 @@ async function testLogin(user) {
             throw new Error (`Erreur HTTP : ${response.status} ${response.statusText}`)
         }
         
-    
         const data = await response.json();
-        window.localStorage.setItem("token", data.token);
+        window.sessionStorage.setItem("token", data.token);
         window.location.href = 'index.html';
         
     } catch (error) {
-        emailInput.classList.add("login-error");
-        emailInput.value = "";
-        passwordInput.classList.add("login-error");
-        passwordInput.value = "";
-        textLogin.style.opacity = 1;
+        Object.values(logsInput).forEach((input) => {
+            input.classList.add("login-error");
+            input.value = "";
+        })
+        textLogin.classList.add("login-error")
     }
-    
-    
-    
 }
 
-formLogin.addEventListener("submit", (e) => {
+document.querySelector("#login-form form").addEventListener("submit", (e) => {
     e.preventDefault();
 
     const user = {
-        email : emailInput.value,
-        password : passwordInput.value
+        email : logsInput.email.value,
+        password : logsInput.password.value
     }
-
     testLogin(user);
     
 });
+
+Object.values(logsInput).forEach((input) => {
+    input.addEventListener("click", () => {
+        Object.values(logsInput).forEach((element)=> {
+            element.classList.remove("login-error");
+        })
+        textLogin.classList.remove("login-error")
+    })
+})

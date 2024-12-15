@@ -12,22 +12,30 @@
 	<link rel="stylesheet" href="./assets/style.css">
 	<script src="app.js" defer></script>
 </head>
-<body>
-	<div class="admin-mode admin-bar">		
+<body class="admin-option">
+	<header>
+	<div class="admin-bar admin-option">		
 		<p><i class="fa-regular fa-pen-to-square"></i> Mode édition</p>
 	</div>
-<header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li>projets</li>
 			<li>contact</li>
-			<li id="login-nav">login</li>
+			<li id="login-nav" class="admin-option"><a href="login.html">login</a></li>
+			<li id="logout-button" class="admin-option"><button>logout</button></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
 </header>
 <main>
+	<aside id="modal" aria-hidden="true" role="dialog" aria-labelledby="title-modal">
+		<i class="fa-solid fa-xmark"></i>
+		<h2 id="title-modal">Galerie photo</h2>
+		<div class="modal-gallery"></div>
+		<hr>
+		<input type="submit" value="Ajouter une photo"></input>
+	</aside>
 	<section id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">
@@ -40,8 +48,8 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets <span class="admin-mode"><i class="fa-regular fa-pen-to-square"></i> modifier</span></h2>
-		<ul id="filters-container"></ul>
+		<h2>Mes Projets <span class="admin-option admin-works-button"><i class="fa-regular fa-pen-to-square"></i> modifier</span></h2>
+		<ul id="filters-container" class="admin-option filters-container"></ul>
 		<div class="gallery">
 		</div>
 	</section>

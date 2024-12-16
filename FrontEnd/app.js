@@ -1,7 +1,6 @@
 const worksAPI = "http://localhost:5678/api/works";
 const categoriesAPI = "http://localhost:5678/api/categories";
 let userToken = window.sessionStorage.getItem("token");
-const galleryModal = document.querySelector("#modal .modal-gallery");
 const adminOption = document.querySelectorAll(".admin-option");
 let worksData;
 let categoriesData;
@@ -95,20 +94,3 @@ async function displayGallery() {
   }
 }
 displayGallery();
-
-
-
-document.querySelector('#portfolio .admin-works-button').addEventListener("click", () => {
-    
-    for (i = 0 ; i < worksData.length; i++) {
-        const imageUrl = worksData[i].imageUrl;
-        const figure = document.createElement("figure");
-        const img = document.createElement("img");
-        const icone = document.createElement("i");
-        icone.classList.add("fa-solid", "fa-trash-can");
-        img.src = imageUrl;
-        figure.appendChild(icone);
-        figure.appendChild(img);
-        galleryModal.appendChild(figure);
-    }
-})

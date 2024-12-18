@@ -151,4 +151,9 @@ document.querySelectorAll(".close-modal").forEach((element) => {
 document.getElementById("open-upload-modal").addEventListener("click", () => {
   document.getElementById("modal-gallery-container").classList.add("upload-open");
   document.getElementById("modal-photo-upload").classList.add("upload-open");
+});
+
+document.getElementById("modal-back-btn").addEventListener("click", () => {
+  document.getElementById("modal-gallery-container").classList.remove("upload-open");
+  document.getElementById("modal-photo-upload").classList.remove("upload-open");
 })

@@ -32,7 +32,7 @@
 <main>
 	<div id="modal-overlay" class="close-modal"></div>
 	<aside id="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" class="admin-option">
-		<button class="close-modal-button close-modal"><i class="fa-solid fa-xmark"></i></button>
+		<button id="close-modal-button" class="close-modal"><i class="fa-solid fa-xmark"></i></button>
 		<div id="modal-gallery-container">
 			<p class="modal-title">Galerie photo</p>
 			<div class="modal-gallery"></div>
@@ -40,6 +40,7 @@
 			<button id="open-upload-modal">Ajoutez une photo</button>
 		</div>
 		<div id="modal-photo-upload">
+			<button id="modal-back-btn"><i class="fa-solid fa-arrow-left"></i></button>
 			<p class="modal-title">Ajout photo</p>
 			<form id="photo-upload-form">
 				<div class="photo-upload-container">

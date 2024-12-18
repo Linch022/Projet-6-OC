@@ -432,14 +432,23 @@ footer nav ul {
   width: calc((80px * 5) + (15px * 4));
 }
 
-.close-modal-button {
+#close-modal-button, #modal-back-btn {
   cursor: pointer;
   position: absolute;
-  right: 30px;
-  top: 20px;
   border: none;
   background: none;
+}
+
+#close-modal-button {
+  right: 30px;
+  top: 20px;
   font-size: 16px;
+}
+
+#modal-back-btn {
+  left: 30px;
+  top: 20px;
+  font-size: 21px;
 }
 
 .modal-title {

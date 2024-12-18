@@ -1,5 +1,5 @@
-const worksAPI = "http://localhost:5678/api/works";
-const categoriesAPI = "http://localhost:5678/api/categories";
+const WORKSAPI = "http://localhost:5678/api/works";
+const CATEGORIESAPI = "http://localhost:5678/api/categories";
 let userToken = window.sessionStorage.getItem("token");
 const adminOption = document.querySelectorAll(".admin-option");
 let worksData;
@@ -26,7 +26,7 @@ document.getElementById("logout-button").addEventListener("click", () => {
 });
 
 async function displayCategories() {
-  categoriesData = await fetchData(categoriesAPI);
+  categoriesData = await fetchData(CATEGORIESAPI);
   const baseFilter = { name: "Tous", id: 0 };
   createFilter(baseFilter);
   categoriesData.map((item) => {
@@ -72,7 +72,7 @@ function changeFilter(button, filterId) {
 //Fonction permettant l'injection des works dans le html
 async function displayGallery() {
   const galleryContainer = document.querySelector("#portfolio .gallery");
-  worksData = await fetchData(worksAPI);
+  worksData = await fetchData(WORKSAPI);
   galleryContainer.replaceChildren();
   for (let i = 0; i < worksData.length; i++) {
     if (filters.has(worksData[i].categoryId)) {
@@ -110,16 +110,26 @@ function displayModal() {
   modal.classList.add("modal-open");
   overlay.classList.add("modal-open");
   modal.ariaHidden = false;
+  galleryModal.replaceChildren();
+  document.getElementById("photo-category").replaceChildren();
+  console.log(categoriesData);
+  
   for (i = 0; i < worksData.length; i++) {
-    const imageUrl = worksData[i].imageUrl;
     const figure = document.createElement("figure");
     const img = document.createElement("img");
     const icone = document.createElement("i");
     icone.classList.add("fa-solid", "fa-trash-can");
-    img.src = imageUrl;
+    img.src = worksData[i].imageUrl;
     figure.appendChild(icone);
     figure.appendChild(img);
     galleryModal.appendChild(figure);
+  }
+  for (let j = 0; j < categoriesData.length; j++) {
+    const option = document.createElement("option");
+    option.value = categoriesData[j].name;
+    option.textContent = categoriesData[j].name;
+    option.setAttribute("data-id", categoriesData[j].id);
+    document.getElementById("photo-category").appendChild(option)
   }
 }
 

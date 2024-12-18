@@ -95,43 +95,60 @@ async function displayGallery() {
 }
 displayGallery();
 
-
-
-document.querySelector('#portfolio .admin-works-button').addEventListener("click", () => {
-  displayModal();
-})
+document
+  .querySelector("#portfolio .admin-works-button")
+  .addEventListener("click", () => {
+    displayModal();
+  });
 
 function displayModal() {
   const modal = document.getElementById("modal");
   const overlay = document.getElementById("modal-overlay");
-  const galleryModal = document.querySelector("#modal-gallery-container .modal-gallery");
+  const galleryModal = document.querySelector(
+    "#modal-gallery-container .modal-gallery"
+  );
   modal.classList.add("modal-open");
-  overlay.classList.add("modal-open")
+  overlay.classList.add("modal-open");
   modal.ariaHidden = false;
-  for (i = 0 ; i < worksData.length; i++) {
-      const imageUrl = worksData[i].imageUrl;
-      const figure = document.createElement("figure");
-      const img = document.createElement("img");
-      const icone = document.createElement("i");
-      icone.classList.add("fa-solid", "fa-trash-can");
-      img.src = imageUrl;
-      figure.appendChild(icone);
-      figure.appendChild(img);
-      galleryModal.appendChild(figure);
+  for (i = 0; i < worksData.length; i++) {
+    const imageUrl = worksData[i].imageUrl;
+    const figure = document.createElement("figure");
+    const img = document.createElement("img");
+    const icone = document.createElement("i");
+    icone.classList.add("fa-solid", "fa-trash-can");
+    img.src = imageUrl;
+    figure.appendChild(icone);
+    figure.appendChild(img);
+    galleryModal.appendChild(figure);
   }
 }
 
 const photoInput = document.getElementById("photo-input");
 
 photoInput.addEventListener("change", (e) => {
-    console.log(e.target.files[0]);
-    
-})
+  console.log(e.target.files[0]);
+  const preview = document.getElementById("image-preview");
+  const file = e.target.files[0];
+
+  if (file) {
+    const imageURL = URL.createObjectURL(file);
+    preview.src = imageURL;
+    preview.classList.add("image-loaded");
+    document
+      .getElementById("photo-upload-button")
+      .classList.add("image-loaded");
+  }
+});
 
 document.querySelectorAll(".close-modal").forEach((element) => {
   element.addEventListener("click", () => {
     document.querySelectorAll(".modal-open").forEach((item) => {
       item.classList.remove("modal-open");
-    })
-  })
+    });
+  });
+});
+
+document.getElementById("open-upload-modal").addEventListener("click", () => {
+  document.getElementById("modal-gallery-container").classList.add("upload-open");
+  document.getElementById("modal-photo-upload").classList.add("upload-open");
 })

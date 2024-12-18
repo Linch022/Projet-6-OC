@@ -322,7 +322,8 @@ li button:hover {
 #contact input,
 #login-form input,
 #modal input,
-#modal select {
+#modal select,
+#modal #open-upload-modal {
   height: 50px;
   font-size: 1.2em;
   border: none;
@@ -340,7 +341,7 @@ li button:hover {
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-input[type="submit"] {
+input[type="submit"], #modal #open-upload-modal {
   cursor: pointer;
   font-family: "Syne";
   font-weight: 700;
@@ -410,9 +411,22 @@ footer nav ul {
   display: flex;
 }
 
+#modal-gallery-container {
+  display: flex;
+}
+#modal-gallery-container.upload-open {
+  display: none;
+}
+
+#modal-photo-upload {
+  display: none;
+}
+#modal-photo-upload.upload-open  {
+  display: flex;
+}
+
 #modal-gallery-container,
 #modal-photo-upload {
-  display: flex;
   flex-direction: column;
   align-items: center;
   width: calc((80px * 5) + (15px * 4));
@@ -438,7 +452,7 @@ footer nav ul {
   width: 100%;
 }
 
-#modal input[type="submit"] {
+#modal input[type="submit"], #modal #open-upload-modal {
   width: 237px;
   margin: 0;
   margin-top: 30px;
@@ -519,6 +533,10 @@ footer nav ul {
   font-weight: 500;
 }
 
+.photo-upload-container label.image-loaded {
+  display: none;
+}
+
 .photo-upload-container p {
   font-size: 10px;
 }
@@ -526,9 +544,9 @@ footer nav ul {
 #image-preview {
   display: none;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 50%);
+  height: 100%;
+  width: 130px;
+  object-fit: cover;
 }
 #image-preview.image-loaded {
   display: block;
@@ -570,8 +588,5 @@ body.admin-mode {
 
 #filters-container.admin-mode,
 #login-nav.admin-mode {
-  display: none;
-}
-#modal-gallery-container {
   display: none;
 }

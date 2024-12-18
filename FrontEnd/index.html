@@ -7,7 +7,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script src="app.js" defer></script>
@@ -30,17 +30,40 @@
 	</nav>
 </header>
 <main>
-	<div id="modal-overlay">
-	<aside id="modal" aria-hidden="true" role="dialog" aria-labelledby="title-modal" class="admin-option">
-		<button class="close-modal-button"><i class="fa-solid fa-xmark"></i></button>
+	<div id="modal-overlay" class="close-modal"></div>
+	<aside id="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" class="admin-option">
+		<button class="close-modal-button close-modal"><i class="fa-solid fa-xmark"></i></button>
 		<div id="modal-gallery-container">
-			<p class="title-modal">Galerie photo</p>
+			<p class="modal-title">Galerie photo</p>
 			<div class="modal-gallery"></div>
 			<hr>
 			<input type="submit" value="Ajouter une photo"></input>
 		</div>
+		<div id="modal-photo-upload">
+			<p class="modal-title">Ajout photo</p>
+			<form id="photo-upload-form">
+				<div class="photo-upload-container">
+					<img src="" alt="Aperçu de l'image" id="image-preview">
+					<i class="fa-regular fa-image"></i>
+					<label for="photo-input" id="photo-upload-button">
+						+ Ajouter Photo
+					</label>
+					<input id="photo-input" type="file">
+					<p>jpg, png : 4mo max</p>
+				</div>
+					<label for="photo-title" class="photo-inputs">Titre
+						<input type="text" id="photo-title" required>
+					</label>
+					<label for="photo-category" class="photo-inputs">
+						Catégorie
+						<i class="fa-solid fa-chevron-down"></i>
+						<select name="categories" id="photo-category" required></select>
+					</label>
+					<hr>
+					<input type="submit" value="Valider" disabled>
+			</form>
+		</div>
 	</aside>
-</div>
 	<section id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">

@@ -49,19 +49,19 @@
 					<label for="photo-input" id="photo-upload-button">
 						+ Ajouter Photo
 					</label>
-					<input id="photo-input" type="file" required>
+					<input id="photo-input" class="upload-inputs" type="file" required>
 					<p>jpg, png : 4mo max</p>
 				</div>
 					<label for="photo-title" class="photo-inputs">Titre
-						<input type="text" id="photo-title" required>
+						<input type="text" id="photo-title" class="upload-inputs" required>
 					</label>
 					<label for="photo-category" class="photo-inputs">
 						Catégorie
 						<i class="fa-solid fa-chevron-down"></i>
-						<select name="categories" id="photo-category" required></select>
+						<select name="categories" id="photo-category" class="upload-inputs" required></select>
 					</label>
 					<hr>
-					<input type="submit" value="Valider" disabled>
+					<input type="submit" value="Valider" id="submit-upload" disabled>
 			</form>
 		</div>
 	</aside>

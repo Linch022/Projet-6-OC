@@ -103,17 +103,14 @@ document
 
 function displayModal() {
   const modal = document.getElementById("modal");
-  const overlay = document.getElementById("modal-overlay");
   const galleryModal = document.querySelector(
     "#modal-gallery-container .modal-gallery"
   );
   modal.classList.add("modal-open");
-  overlay.classList.add("modal-open");
+  document.getElementById("modal-overlay").classList.add("modal-open");
   modal.ariaHidden = false;
   galleryModal.replaceChildren();
   document.getElementById("photo-category").replaceChildren();
-  console.log(categoriesData);
-  
   for (i = 0; i < worksData.length; i++) {
     const figure = document.createElement("figure");
     const img = document.createElement("img");
@@ -129,7 +126,7 @@ function displayModal() {
     option.value = categoriesData[j].name;
     option.textContent = categoriesData[j].name;
     option.setAttribute("data-id", categoriesData[j].id);
-    document.getElementById("photo-category").appendChild(option)
+    document.getElementById("photo-category").appendChild(option);
   }
 }
 
@@ -150,8 +147,8 @@ photoInput.addEventListener("change", (e) => {
   }
 });
 
-document.querySelectorAll(".close-modal").forEach((element) => {
-  element.addEventListener("click", () => {
+document.querySelectorAll(".close-modal").forEach((e) => {
+  e.addEventListener("click", () => {
     document.querySelectorAll(".modal-open").forEach((item) => {
       item.classList.remove("modal-open");
     });
@@ -159,11 +156,39 @@ document.querySelectorAll(".close-modal").forEach((element) => {
 });
 
 document.getElementById("open-upload-modal").addEventListener("click", () => {
-  document.getElementById("modal-gallery-container").classList.add("upload-open");
+  document
+    .getElementById("modal-gallery-container")
+    .classList.add("upload-open");
   document.getElementById("modal-photo-upload").classList.add("upload-open");
 });
 
 document.getElementById("modal-back-btn").addEventListener("click", () => {
-  document.getElementById("modal-gallery-container").classList.remove("upload-open");
+  document
+    .getElementById("modal-gallery-container")
+    .classList.remove("upload-open");
   document.getElementById("modal-photo-upload").classList.remove("upload-open");
+});
+
+const inputs = document.querySelectorAll(".upload-inputs");
+function checkInputs() {
+  const allFilled = Array.from(inputs).every((input) => input.value);
+  document.getElementById("submit-upload").disabled = !allFilled;
+}
+
+inputs.forEach((e) => {
+  e.addEventListener("change", checkInputs);
+});
+
+document.getElementById("photo-upload-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const preview = document.getElementById("image-preview");
+  preview.src = "";
+  preview.classList.remove("image-loaded");
+  document
+  .getElementById("photo-upload-button")
+  .classList.remove("image-loaded");
+
+  inputs.forEach((item) => {
+    item.value = "";
+  })
 })

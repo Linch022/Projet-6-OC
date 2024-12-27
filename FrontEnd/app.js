@@ -7,9 +7,43 @@ let categoriesData;
 
 const filters = new Set();
 
-async function fetchData(url) {
-  const response = await fetch(url);
-  return await response.json();
+async function fetchData(
+  url,
+  { method = "GET", headers = {}, body = null } = {}
+) {
+  try {
+    console.log(url);
+    console.log(method);
+    console.log(headers);
+
+    const options = {
+      method,
+      headers,
+    };
+
+    if (body) {
+      options.body = body;
+    }
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      console.error(`Erreur HTTP : ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    try {
+      const data = await response.json();
+      console.log("Réponse JSON :", data);
+      return data;
+    } catch (error) {
+      console.log("Réponse sans JSON.");
+      return response;
+    }
+  } catch (error) {
+    console.error("Une erreur s'est produite :", error);
+    throw error;
+  }
 }
 
 function isLog() {
@@ -24,7 +58,6 @@ document.getElementById("logout-button").addEventListener("click", () => {
   userToken = null;
   adminOption.forEach((e) => e.classList.remove("admin-mode"));
 });
-
 
 async function displayCategories() {
   categoriesData = await fetchData(CATEGORIESAPI);
@@ -117,11 +150,17 @@ function displayModal() {
     const img = document.createElement("img");
     const icone = document.createElement("i");
     icone.classList.add("fa-solid", "fa-trash-can");
-    icone.addEventListener("click", () => {      
-      deleteData(worksData[i].id);
+    icone.addEventListener("click", () => {
+      fetchData(`${WORKSAPI}/${worksData[i].id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
       worksData = worksData.filter((work) => work.id !== worksData[i].id);
       displayModal();
-    })
+    });
     img.src = worksData[i].imageUrl;
     figure.appendChild(icone);
     figure.appendChild(img);
@@ -144,7 +183,7 @@ photoInput.addEventListener("change", (e) => {
   const preview = document.getElementById("image-preview");
   const file = e.target.files[0];
   const maxSize = 4 * 1024 * 1024;
-  const filesTypes = ['image/jpeg', 'image/png'];
+  const filesTypes = ["image/jpeg", "image/png"];
 
   if (filesTypes.includes(file.type) && file.size < maxSize) {
     const imageURL = URL.createObjectURL(file);
@@ -154,7 +193,7 @@ photoInput.addEventListener("change", (e) => {
       .getElementById("photo-upload-button")
       .classList.add("image-loaded");
   } else {
-    alert("L'image n'est pas du bon type ou trop grosse")
+    alert("L'image n'est pas du bon type ou trop grosse");
   }
 });
 
@@ -190,75 +229,40 @@ inputs.forEach((e) => {
   e.addEventListener("change", checkInputs);
 });
 
-document.getElementById("photo-upload-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  formData.append('title', inputs[1].value);
-  formData.append('imageUrl', inputs[0].files[0]);
-  formData.append('categoryId', inputs[2].selectedOptions[0].getAttribute("data-id"));
-  for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
-  }
-  const result = await postData(formData);
-  if(result) {
-    console.log(result);
-    
-    displayGallery();
-    displayModal();
-    const preview = document.getElementById("image-preview");
-    preview.src = "";
-    preview.classList.remove("image-loaded");
-    document
-    .getElementById("photo-upload-button")
-    .classList.remove("image-loaded");
-    inputs.forEach((item) => {
-      item.value = "";
-    })
-  }
-})
-
-async function deleteData(id) { 
-  try {
-    const response = await fetch(`http://localhost:5678/api/works/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${userToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    if(response.ok) {
-      console.log(`L'élément avec l'ID ${id} a bien été supprimé`);
-      
-    } else {
-      console.error("Erreur lors de la suppression");
+document
+  .getElementById("photo-upload-form")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", inputs[1].value);
+    formData.append("image", inputs[0].files[0]);
+    formData.append(
+      "category",
+      inputs[2].selectedOptions[0].getAttribute("data-id")
+    );
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
     }
-  } catch(error) {
-    console.error(`Erreur`, error);
-    
-  }
-}
-
-async function postData(formData) {
-  
-  for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
-  }
-  try {
-    
-    console.log(formData);
-    const response = await fetch(WORKSAPI, {
+    const result = await fetchData(WORKSAPI, {
       method: "POST",
       headers: {
-        'Authorization': `Bearer ${userToken}`,
-        'Content-Type': 'application/json'      },
+        Authorization: `Bearer ${userToken}`,
+      },
       body: formData,
     });
-    if (response.ok) {
-      console.log("Les données ont été envoyées avec succès !");
-    } else {
-      console.error("Erreur lors de l'envoi des données :", response.status, response.statusText);
+    if (result) {
+      console.log(result);
+
+      displayGallery();
+      displayModal();
+      const preview = document.getElementById("image-preview");
+      preview.src = "";
+      preview.classList.remove("image-loaded");
+      document
+        .getElementById("photo-upload-button")
+        .classList.remove("image-loaded");
+      inputs.forEach((item) => {
+        item.value = "";
+      });
     }
-  } catch (error) {
-    console.error("Une erreur s'est produite :", error);
-  }
-}
+  });

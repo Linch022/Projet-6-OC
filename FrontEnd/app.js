@@ -25,6 +25,7 @@ document.getElementById("logout-button").addEventListener("click", () => {
   adminOption.forEach((e) => e.classList.remove("admin-mode"));
 });
 
+
 async function displayCategories() {
   categoriesData = await fetchData(CATEGORIESAPI);
   const baseFilter = { name: "Tous", id: 0 };
@@ -36,6 +37,32 @@ async function displayCategories() {
 }
 
 displayCategories();
+
+//Fonction permettant l'injection des works dans le html
+async function displayGallery() {
+  const galleryContainer = document.querySelector("#portfolio .gallery");
+  worksData = await fetchData(WORKSAPI);
+  galleryContainer.replaceChildren();
+  for (let i = 0; i < worksData.length; i++) {
+    if (filters.has(worksData[i].categoryId)) {
+      const imageUrl = worksData[i].imageUrl;
+      const title = worksData[i].title;
+
+      const figure = document.createElement("figure");
+      const img = document.createElement("img");
+      const figCaption = document.createElement("figcaption");
+
+      img.src = imageUrl;
+      img.alt = title;
+      figCaption.textContent = title;
+
+      figure.appendChild(img);
+      figure.appendChild(figCaption);
+      galleryContainer.appendChild(figure);
+    }
+  }
+}
+displayGallery();
 
 function createFilter(filter) {
   filters.add(filter.id);
@@ -69,32 +96,6 @@ function changeFilter(button, filterId) {
   displayGallery();
 }
 
-//Fonction permettant l'injection des works dans le html
-async function displayGallery() {
-  const galleryContainer = document.querySelector("#portfolio .gallery");
-  worksData = await fetchData(WORKSAPI);
-  galleryContainer.replaceChildren();
-  for (let i = 0; i < worksData.length; i++) {
-    if (filters.has(worksData[i].categoryId)) {
-      const imageUrl = worksData[i].imageUrl;
-      const title = worksData[i].title;
-
-      const figure = document.createElement("figure");
-      const img = document.createElement("img");
-      const figCaption = document.createElement("figcaption");
-
-      img.src = imageUrl;
-      img.alt = title;
-      figCaption.textContent = title;
-
-      figure.appendChild(img);
-      figure.appendChild(figCaption);
-      galleryContainer.appendChild(figure);
-    }
-  }
-}
-displayGallery();
-
 document
   .querySelector("#portfolio .admin-works-button")
   .addEventListener("click", () => {
@@ -111,11 +112,16 @@ function displayModal() {
   modal.ariaHidden = false;
   galleryModal.replaceChildren();
   document.getElementById("photo-category").replaceChildren();
-  for (i = 0; i < worksData.length; i++) {
+  for (let i = 0; i < worksData.length; i++) {
     const figure = document.createElement("figure");
     const img = document.createElement("img");
     const icone = document.createElement("i");
     icone.classList.add("fa-solid", "fa-trash-can");
+    icone.addEventListener("click", () => {      
+      deleteData(worksData[i].id);
+      worksData = worksData.filter((work) => work.id !== worksData[i].id);
+      displayModal();
+    })
     img.src = worksData[i].imageUrl;
     figure.appendChild(icone);
     figure.appendChild(img);
@@ -128,6 +134,7 @@ function displayModal() {
     option.setAttribute("data-id", categoriesData[j].id);
     document.getElementById("photo-category").appendChild(option);
   }
+  console.log(worksData);
 }
 
 const photoInput = document.getElementById("photo-input");
@@ -136,14 +143,18 @@ photoInput.addEventListener("change", (e) => {
   console.log(e.target.files[0]);
   const preview = document.getElementById("image-preview");
   const file = e.target.files[0];
+  const maxSize = 4 * 1024 * 1024;
+  const filesTypes = ['image/jpeg', 'image/png'];
 
-  if (file) {
+  if (filesTypes.includes(file.type) && file.size < maxSize) {
     const imageURL = URL.createObjectURL(file);
     preview.src = imageURL;
     preview.classList.add("image-loaded");
     document
       .getElementById("photo-upload-button")
       .classList.add("image-loaded");
+  } else {
+    alert("L'image n'est pas du bon type ou trop grosse")
   }
 });
 
@@ -179,16 +190,75 @@ inputs.forEach((e) => {
   e.addEventListener("change", checkInputs);
 });
 
-document.getElementById("photo-upload-form").addEventListener("submit", (e) => {
+document.getElementById("photo-upload-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const preview = document.getElementById("image-preview");
-  preview.src = "";
-  preview.classList.remove("image-loaded");
-  document
-  .getElementById("photo-upload-button")
-  .classList.remove("image-loaded");
-
-  inputs.forEach((item) => {
-    item.value = "";
-  })
+  const formData = new FormData();
+  formData.append('title', inputs[1].value);
+  formData.append('imageUrl', inputs[0].files[0]);
+  formData.append('categoryId', inputs[2].selectedOptions[0].getAttribute("data-id"));
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  const result = await postData(formData);
+  if(result) {
+    console.log(result);
+    
+    displayGallery();
+    displayModal();
+    const preview = document.getElementById("image-preview");
+    preview.src = "";
+    preview.classList.remove("image-loaded");
+    document
+    .getElementById("photo-upload-button")
+    .classList.remove("image-loaded");
+    inputs.forEach((item) => {
+      item.value = "";
+    })
+  }
 })
+
+async function deleteData(id) { 
+  try {
+    const response = await fetch(`http://localhost:5678/api/works/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    if(response.ok) {
+      console.log(`L'élément avec l'ID ${id} a bien été supprimé`);
+      
+    } else {
+      console.error("Erreur lors de la suppression");
+    }
+  } catch(error) {
+    console.error(`Erreur`, error);
+    
+  }
+}
+
+async function postData(formData) {
+  
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  try {
+    
+    console.log(formData);
+    const response = await fetch(WORKSAPI, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'      },
+      body: formData,
+    });
+    if (response.ok) {
+      console.log("Les données ont été envoyées avec succès !");
+    } else {
+      console.error("Erreur lors de l'envoi des données :", response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error("Une erreur s'est produite :", error);
+  }
+}

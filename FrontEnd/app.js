@@ -108,7 +108,7 @@ async function fetchGalleryData() {
 }
 
 //Fonction permettant l'injection des works dans le html
-async function displayGallery() {
+function displayGallery() {
   const galleryContainer = document.querySelector("#portfolio .gallery");
   galleryContainer.replaceChildren(); // Permet de vider le container de la gallerie avant de générer la gallerie
     // Boucle pour la création des items dans la gallerie
@@ -135,10 +135,10 @@ async function displayGallery() {
 // Lance les fonctions d'appel à l'api puis d'affichage des éléments de la gallerie
 async function initGallery() {
   await fetchGalleryData();
-  await displayGallery();
+  displayGallery();
 }
-document.addEventListener("DOMContentLoaded", async () => {
-  await initGallery();
+document.addEventListener("DOMContentLoaded", () => {
+  initGallery();
 });
 
 
@@ -275,6 +275,7 @@ document
     });
     // Si l'envoi fonctionne relance l'affichage des galleries et affiche un message à l'utilisateur pour lui confirmer l'envoi
     if (result) {
+      console.log(result);
       await initGallery();
       displayModal();
       document.getElementById("add-success").classList.add("add-status");

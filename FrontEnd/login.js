@@ -28,11 +28,7 @@ async function testLogin(user) {
     window.sessionStorage.setItem("token", data.token);
     window.location.href = "index.html";
   } catch (error) {
-    Object.values(logsInput).forEach((input) => {
-      input.classList.add("login-error");
-      input.value = "";
-    });
-    textLogin.classList.add("login-error");
+    document.querySelector("#login-form form").id = "login-error";
   }
 }
 
@@ -47,10 +43,7 @@ document.querySelector("#login-form form").addEventListener("submit", (e) => {
 });
 
 Object.values(logsInput).forEach((input) => {
-  input.addEventListener("click", () => {
-    Object.values(logsInput).forEach((element) => {
-      element.classList.remove("login-error");
-    });
-    textLogin.classList.remove("login-error");
+  input.addEventListener("click", () => {             
+    document.querySelector("#login-form form").removeAttribute("id");
   });
 });

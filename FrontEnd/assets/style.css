@@ -389,18 +389,11 @@ footer nav ul {
   flex: 1;
 }
 
-#login-page input.login-error {
-  border: 1px solid red;
-}
-
 #login-page #login-text-error {
   opacity: 0;
   color: red;
   text-align: center;
   margin-top: 4px;
-}
-#login-page #login-text-error.login-error {
-  opacity: 1;
 }
 
 #modal-overlay {
@@ -641,4 +634,12 @@ body.admin-mode {
 #add-success.add-status,
 #add-echec.add-status {
   display: inline-block;
+}
+
+#login-error input:not([type="submit"]) {
+  border: 1px solid red;
+}
+
+#login-error #login-text-error {
+  opacity: 1;
 }

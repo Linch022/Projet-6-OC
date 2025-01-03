@@ -10,12 +10,8 @@ let categoriesData = [];
 // Variable qui contient un objet Set qui permettra de filter les Works
 const filters = new Set();
 
-
 // Fonction de Fetch pour les appels API avec une méthode de base en GET et la possibilité de passer les autres méthodes en paramètre
-async function fetchData(
-  url,
-  { method = "GET", headers = {}, body = null } = {}
-) {
+async function fetchData(url, method, headers, body) {
   try {
     const options = {
       method,
@@ -72,7 +68,7 @@ function createFilter(filter) {
   document.getElementById("filters-container").appendChild(li);
 }
 
-// Fonction appelée avec l'event listener sur les filtres pour filtrer la gallerie 
+// Fonction appelée avec l'event listener sur les filtres pour filtrer la gallerie
 function changeFilter(button, filterId) {
   document
     .querySelector("#portfolio .active-filter")
@@ -101,7 +97,6 @@ async function displayCategories() {
 }
 displayCategories();
 
-
 // Récupère les données Works dans l'api
 async function fetchGalleryData() {
   worksData = await fetchData(WORKSAPI);
@@ -109,9 +104,11 @@ async function fetchGalleryData() {
 
 //Fonction permettant l'injection des works dans le html
 function displayGallery() {
-    // Boucle pour la création des items dans la galerie
+  // Boucle pour la création des items dans la galerie
   for (let i = 0; i < worksData.length; i++) {
-    const element = document.querySelector(`.gallery [data-workID="${worksData[i].id}"]`);
+    const element = document.querySelector(
+      `.gallery [data-workID="${worksData[i].id}"]`
+    );
     if (filters.has(worksData[i].categoryId)) {
       element ? null : createGalleryElement(worksData[i]);
     } else {
@@ -130,7 +127,7 @@ function createGalleryElement(data) {
   img.src = data.imageUrl;
   img.alt = data.title;
   figCaption.textContent = data.title;
-  figure.setAttribute("data-workID", data.id)
+  figure.setAttribute("data-workID", data.id);
   figure.appendChild(img);
   figure.appendChild(figCaption);
   galleryContainer.appendChild(figure);
@@ -145,14 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initGallery();
 });
 
-
 // EventListener pour lancer la fonction d'affichage de la modale
 document
   .querySelector("#portfolio .admin-works-button")
   .addEventListener("click", () => {
     displayModal();
   });
-
 
 //Fonction permettant l'affichage de la modale
 function displayModal() {
@@ -165,12 +160,14 @@ function displayModal() {
   modal.ariaHidden = false;
   // Boucle pour la création des items dans la gallerie
   for (let i = 0; i < worksData.length; i++) {
-    const element = document.querySelector(`#modal [data-workID="${worksData[i].id}"]`);
+    const element = document.querySelector(
+      `#modal [data-workID="${worksData[i].id}"]`
+    );
     element ? null : createElementModal(worksData[i]);
   }
   // Boucle pour la création des éléments de l'input select
-  const isCreate = document.querySelector("#photo-category option");  
-  if(isCreate === null) {
+  const isCreate = document.querySelector("#photo-category option");
+  if (isCreate === null) {
     for (let j = 0; j < categoriesData.length; j++) {
       const option = document.createElement("option");
       option.value = categoriesData[j].name;
@@ -180,7 +177,7 @@ function displayModal() {
     }
   }
 }
-// Création d'un élément pour la galerie de la modale 
+// Création d'un élément pour la galerie de la modale
 function createElementModal(data) {
   const galleryModal = document.querySelector(
     "#modal-gallery-container .modal-gallery"
@@ -190,24 +187,24 @@ function createElementModal(data) {
   const button = document.createElement("button");
   const icone = document.createElement("i");
   icone.classList.add("fa-solid", "fa-trash-can");
-  figure.setAttribute("data-workID", data.id)
+  figure.setAttribute("data-workID", data.id);
   button.setAttribute("title", `Supprimer le projet : ${data.title}`);
   // Event Listener sur la poubelle qui permet de supprimer un Works
   button.addEventListener("click", () => {
-    fetchData(`${WORKSAPI}/${data.id}`, {
-      method: "DELETE",
-      headers: {
+    fetchData(`${WORKSAPI}/${data.id}`,
+      "DELETE",
+      {
         Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
-    });
+    );
     worksData = worksData.filter((work) => work.id !== data.id);
     const attribut = document.querySelectorAll(`[data-workID="${data.id}"`);
-    
-    attribut.forEach(element => element.remove());
+
+    attribut.forEach((element) => element.remove());
   });
   img.src = data.imageUrl;
-  button.appendChild(icone)
+  button.appendChild(icone);
   figure.appendChild(button);
   figure.appendChild(img);
   galleryModal.appendChild(figure);
@@ -283,13 +280,14 @@ document
       "category",
       inputs[2].selectedOptions[0].getAttribute("data-id")
     );
-    const result = await fetchData(WORKSAPI, {
-      method: "POST",
-      headers: {
+    const result = await fetchData(
+      WORKSAPI,
+      "POST",
+      {
         Authorization: `Bearer ${userToken}`,
       },
-      body: formData,
-    });
+      formData
+    );
     // Si l'envoi fonctionne relance l'affichage des galleries et affiche un message à l'utilisateur pour lui confirmer l'envoi
     if (result) {
       console.log(result);
@@ -307,7 +305,8 @@ document
       inputs.forEach((item) => {
         item.value = "";
       });
-    } else { // Affiche un message à l'utilisateur si l'envoi ne fonctionne pas
+    } else {
+      // Affiche un message à l'utilisateur si l'envoi ne fonctionne pas
       document.getElementById("add-echec").classList.add("add-status");
     }
   });

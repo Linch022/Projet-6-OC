@@ -129,7 +129,7 @@ function createGalleryElement(data) {
   img.src = data.imageUrl;
   img.alt = data.title;
   figCaption.textContent = data.title;
-
+  figure.setAttribute("data-workID", data.id)
   figure.appendChild(img);
   figure.appendChild(figCaption);
   galleryContainer.appendChild(figure);
@@ -188,6 +188,7 @@ function createElementModal(data) {
   const button = document.createElement("button");
   const icone = document.createElement("i");
   icone.classList.add("fa-solid", "fa-trash-can");
+  figure.setAttribute("data-workID", data.id)
   button.setAttribute("title", `Supprimer le projet : ${data.title}`);
   // Event Listener sur la poubelle qui permet de supprimer un Works
   button.addEventListener("click", () => {
@@ -199,8 +200,9 @@ function createElementModal(data) {
       },
     });
     worksData = worksData.filter((work) => work.id !== data.id);
-    displayModal();
-    displayGallery();
+    const attribut = document.querySelectorAll(`[data-workID="${data.id}"`);
+    
+    attribut.forEach(element => element.remove());
   });
   img.src = data.imageUrl;
   button.appendChild(icone)

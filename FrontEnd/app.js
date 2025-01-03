@@ -110,8 +110,8 @@ async function fetchGalleryData() {
 //Fonction permettant l'injection des works dans le html
 function displayGallery() {
   const galleryContainer = document.querySelector("#portfolio .gallery");
-  galleryContainer.replaceChildren(); // Permet de vider le container de la gallerie avant de générer la gallerie
-    // Boucle pour la création des items dans la gallerie
+  galleryContainer.replaceChildren(); // Permet de vider le container de la galerie avant de générer la galerie
+    // Boucle pour la création des items dans la galerie
   for (let i = 0; i < worksData.length; i++) {
     if (filters.has(worksData[i].categoryId)) {
       const imageUrl = worksData[i].imageUrl;
@@ -165,10 +165,12 @@ function displayModal() {
   for (let i = 0; i < worksData.length; i++) {
     const figure = document.createElement("figure");
     const img = document.createElement("img");
+    const button = document.createElement("button");
     const icone = document.createElement("i");
     icone.classList.add("fa-solid", "fa-trash-can");
+    button.setAttribute("title", `Supprimer le projet : ${worksData[i].title}`);
     // Event Listener sur la poubelle qui permet de supprimer un Works
-    icone.addEventListener("click", () => {
+    button.addEventListener("click", () => {
       fetchData(`${WORKSAPI}/${worksData[i].id}`, {
         method: "DELETE",
         headers: {
@@ -181,7 +183,8 @@ function displayModal() {
       displayGallery();
     });
     img.src = worksData[i].imageUrl;
-    figure.appendChild(icone);
+    button.appendChild(icone)
+    figure.appendChild(button);
     figure.appendChild(img);
     galleryModal.appendChild(figure);
   }

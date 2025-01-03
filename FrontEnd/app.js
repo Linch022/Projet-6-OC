@@ -109,12 +109,13 @@ async function fetchGalleryData() {
 
 //Fonction permettant l'injection des works dans le html
 function displayGallery() {
-  const galleryContainer = document.querySelector("#portfolio .gallery");
-  galleryContainer.replaceChildren(); // Permet de vider le container de la galerie avant de générer la galerie
     // Boucle pour la création des items dans la galerie
   for (let i = 0; i < worksData.length; i++) {
+    const element = document.querySelector(`.gallery [data-workID="${worksData[i].id}"]`);
     if (filters.has(worksData[i].categoryId)) {
-      createGalleryElement(worksData[i]);
+      element ? null : createGalleryElement(worksData[i]);
+    } else {
+      element ? element.remove() : null;
     }
   }
 }
@@ -162,21 +163,22 @@ function displayModal() {
   modal.classList.add("modal-open");
   document.getElementById("modal-overlay").classList.add("modal-open");
   modal.ariaHidden = false;
-  galleryModal.replaceChildren(); // Permet de vider le container de la gallerie avant de générer la gallerie
-  document.getElementById("photo-category").replaceChildren(); // Vide l'input select du formulaire avant de le générer
   // Boucle pour la création des items dans la gallerie
   for (let i = 0; i < worksData.length; i++) {
-    createElementModal(worksData[i])
+    const element = document.querySelector(`#modal [data-workID="${worksData[i].id}"]`);
+    element ? null : createElementModal(worksData[i]);
   }
   // Boucle pour la création des éléments de l'input select
-  for (let j = 0; j < categoriesData.length; j++) {
-    const option = document.createElement("option");
-    option.value = categoriesData[j].name;
-    option.textContent = categoriesData[j].name;
-    option.setAttribute("data-id", categoriesData[j].id);
-    document.getElementById("photo-category").appendChild(option);
+  const isCreate = document.querySelector("#photo-category option");  
+  if(isCreate === null) {
+    for (let j = 0; j < categoriesData.length; j++) {
+      const option = document.createElement("option");
+      option.value = categoriesData[j].name;
+      option.textContent = categoriesData[j].name;
+      option.setAttribute("data-id", categoriesData[j].id);
+      document.getElementById("photo-category").appendChild(option);
+    }
   }
-  console.log(worksData);
 }
 // Création d'un élément pour la galerie de la modale 
 function createElementModal(data) {

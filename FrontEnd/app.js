@@ -114,22 +114,25 @@ function displayGallery() {
     // Boucle pour la création des items dans la galerie
   for (let i = 0; i < worksData.length; i++) {
     if (filters.has(worksData[i].categoryId)) {
-      const imageUrl = worksData[i].imageUrl;
-      const title = worksData[i].title;
-
-      const figure = document.createElement("figure");
-      const img = document.createElement("img");
-      const figCaption = document.createElement("figcaption");
-
-      img.src = imageUrl;
-      img.alt = title;
-      figCaption.textContent = title;
-
-      figure.appendChild(img);
-      figure.appendChild(figCaption);
-      galleryContainer.appendChild(figure);
+      createGalleryElement(worksData[i]);
     }
   }
+}
+// Création d'un élément pour la galerie
+function createGalleryElement(data) {
+  const galleryContainer = document.querySelector("#portfolio .gallery");
+
+  const figure = document.createElement("figure");
+  const img = document.createElement("img");
+  const figCaption = document.createElement("figcaption");
+
+  img.src = data.imageUrl;
+  img.alt = data.title;
+  figCaption.textContent = data.title;
+
+  figure.appendChild(img);
+  figure.appendChild(figCaption);
+  galleryContainer.appendChild(figure);
 }
 
 // Lance les fonctions d'appel à l'api puis d'affichage des éléments de la gallerie
@@ -163,30 +166,7 @@ function displayModal() {
   document.getElementById("photo-category").replaceChildren(); // Vide l'input select du formulaire avant de le générer
   // Boucle pour la création des items dans la gallerie
   for (let i = 0; i < worksData.length; i++) {
-    const figure = document.createElement("figure");
-    const img = document.createElement("img");
-    const button = document.createElement("button");
-    const icone = document.createElement("i");
-    icone.classList.add("fa-solid", "fa-trash-can");
-    button.setAttribute("title", `Supprimer le projet : ${worksData[i].title}`);
-    // Event Listener sur la poubelle qui permet de supprimer un Works
-    button.addEventListener("click", () => {
-      fetchData(`${WORKSAPI}/${worksData[i].id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      worksData = worksData.filter((work) => work.id !== worksData[i].id);
-      displayModal();
-      displayGallery();
-    });
-    img.src = worksData[i].imageUrl;
-    button.appendChild(icone)
-    figure.appendChild(button);
-    figure.appendChild(img);
-    galleryModal.appendChild(figure);
+    createElementModal(worksData[i])
   }
   // Boucle pour la création des éléments de l'input select
   for (let j = 0; j < categoriesData.length; j++) {
@@ -197,6 +177,36 @@ function displayModal() {
     document.getElementById("photo-category").appendChild(option);
   }
   console.log(worksData);
+}
+// Création d'un élément pour la galerie de la modale 
+function createElementModal(data) {
+  const galleryModal = document.querySelector(
+    "#modal-gallery-container .modal-gallery"
+  );
+  const figure = document.createElement("figure");
+  const img = document.createElement("img");
+  const button = document.createElement("button");
+  const icone = document.createElement("i");
+  icone.classList.add("fa-solid", "fa-trash-can");
+  button.setAttribute("title", `Supprimer le projet : ${data.title}`);
+  // Event Listener sur la poubelle qui permet de supprimer un Works
+  button.addEventListener("click", () => {
+    fetchData(`${WORKSAPI}/${data.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    worksData = worksData.filter((work) => work.id !== data.id);
+    displayModal();
+    displayGallery();
+  });
+  img.src = data.imageUrl;
+  button.appendChild(icone)
+  figure.appendChild(button);
+  figure.appendChild(img);
+  galleryModal.appendChild(figure);
 }
 
 // Permet de vérifier si l'image uploadée dans le formulaire est conforme puis ajoute une miniature
@@ -279,8 +289,10 @@ document
     // Si l'envoi fonctionne relance l'affichage des galleries et affiche un message à l'utilisateur pour lui confirmer l'envoi
     if (result) {
       console.log(result);
-      await initGallery();
-      displayModal();
+      worksData.push(result);
+      console.log(worksData);
+      createGalleryElement(result);
+      createElementModal(result);
       document.getElementById("add-success").classList.add("add-status");
       const preview = document.getElementById("image-preview");
       preview.src = "";

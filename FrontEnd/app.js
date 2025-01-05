@@ -2,7 +2,7 @@ const WORKSAPI = "http://localhost:5678/api/works";
 const CATEGORIESAPI = "http://localhost:5678/api/categories";
 let userToken = window.sessionStorage.getItem("token");
 const adminOption = document.querySelectorAll(".admin-option");
-const inputs = document.querySelectorAll(".upload-inputs");
+let inputs = [];
 const photoInput = document.getElementById("photo-input");
 let worksData = [];
 let categoriesData = [];
@@ -88,18 +88,11 @@ function changeFilter(button, filterId) {
 
 // Récupères les données de l'api catégories puis lance la fonction pour créer un filtre
 async function displayCategories() {
-  categoriesData = await fetchData(CATEGORIESAPI);
   const baseFilter = { name: "Tous", id: 0 };
   createFilter(baseFilter);
   categoriesData.map((item) => {
     createFilter(item);
   });
-}
-displayCategories();
-
-// Récupère les données Works dans l'api
-async function fetchGalleryData() {
-  worksData = await fetchData(WORKSAPI);
 }
 
 //Fonction permettant l'injection des works dans le html
@@ -135,12 +128,12 @@ function createGalleryElement(data) {
 
 // Lance les fonctions d'appel à l'api puis d'affichage des éléments de la gallerie
 async function initGallery() {
-  await fetchGalleryData();
+  categoriesData = await fetchData(CATEGORIESAPI);
+  worksData = await fetchData(WORKSAPI);
+  displayCategories();
   displayGallery();
 }
-document.addEventListener("DOMContentLoaded", () => {
-  initGallery();
-});
+initGallery();
 
 // EventListener pour lancer la fonction d'affichage de la modale
 document
@@ -168,13 +161,25 @@ function displayModal() {
   // Boucle pour la création des éléments de l'input select
   const isCreate = document.querySelector("#photo-category option");
   if (isCreate === null) {
+    const select = document.createElement("select");
+    select.id = "photo-category";
+    select.setAttribute("name", "categories");
+    select.classList.add("upload-inputs");
+    select.required = true;
     for (let j = 0; j < categoriesData.length; j++) {
       const option = document.createElement("option");
       option.value = categoriesData[j].name;
       option.textContent = categoriesData[j].name;
       option.setAttribute("data-id", categoriesData[j].id);
-      document.getElementById("photo-category").appendChild(option);
+      select.appendChild(option);
     }
+    const label = document.getElementById("categories-label");
+    label.setAttribute("for", "photo-category");
+    label.appendChild(select);
+    inputs = document.querySelectorAll(".upload-inputs");
+    inputs.forEach((e) => {
+      e.addEventListener("change", checkInputs);
+    });
   }
 }
 // Création d'un élément pour la galerie de la modale
@@ -191,13 +196,10 @@ function createElementModal(data) {
   button.setAttribute("title", `Supprimer le projet : ${data.title}`);
   // Event Listener sur la poubelle qui permet de supprimer un Works
   button.addEventListener("click", () => {
-    fetchData(`${WORKSAPI}/${data.id}`,
-      "DELETE",
-      {
-        Authorization: `Bearer ${userToken}`,
-        "Content-Type": "application/json",
-      },
-    );
+    fetchData(`${WORKSAPI}/${data.id}`, "DELETE", {
+      Authorization: `Bearer ${userToken}`,
+      "Content-Type": "application/json",
+    });
     worksData = worksData.filter((work) => work.id !== data.id);
     const attribut = document.querySelectorAll(`[data-workID="${data.id}"`);
 
@@ -212,8 +214,10 @@ function createElementModal(data) {
 
 // Permet de vérifier si l'image uploadée dans le formulaire est conforme puis ajoute une miniature
 photoInput.addEventListener("change", (e) => {
-  console.log(e.target.files[0]);
-  const preview = document.getElementById("image-preview");
+  // const preview = document.getElementById("image-preview");
+  const preview = document.createElement("img");
+  preview.id = "image-preview";
+  preview.alt = "Aperçu de l'image ajoutée";
   const file = e.target.files[0];
   const maxSize = 4 * 1024 * 1024;
   const filesTypes = ["image/jpeg", "image/png"];
@@ -225,6 +229,7 @@ photoInput.addEventListener("change", (e) => {
     document
       .getElementById("photo-upload-button")
       .classList.add("image-loaded");
+    document.querySelector(".photo-upload-container").appendChild(preview);
   } else {
     alert("L'image n'est pas du bon type ou trop grosse");
   }
@@ -264,9 +269,6 @@ function checkInputs() {
     document.querySelector(".add-status").classList.remove("add-status");
   }
 }
-inputs.forEach((e) => {
-  e.addEventListener("change", checkInputs);
-});
 
 // Envoi les données du formulaire au backend
 document
@@ -276,6 +278,8 @@ document
     const formData = new FormData();
     formData.append("title", inputs[1].value);
     formData.append("image", inputs[0].files[0]);
+    console.log(inputs);
+
     formData.append(
       "category",
       inputs[2].selectedOptions[0].getAttribute("data-id")
@@ -290,9 +294,7 @@ document
     );
     // Si l'envoi fonctionne relance l'affichage des galleries et affiche un message à l'utilisateur pour lui confirmer l'envoi
     if (result) {
-      console.log(result);
       worksData.push(result);
-      console.log(worksData);
       createGalleryElement(result);
       createElementModal(result);
       document.getElementById("add-success").classList.add("add-status");

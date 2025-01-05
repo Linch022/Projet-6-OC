@@ -641,10 +641,10 @@ body.admin-mode {
   display: inline-block;
 }
 
-#login-error input:not([type="submit"]) {
+#login-form .login-error input:not([type="submit"]) {
   border: 1px solid red;
 }
 
-#login-error #login-text-error {
+#login-form .login-error #login-text-error {
   opacity: 1;
 }

@@ -28,7 +28,7 @@ async function testLogin(user) {
     window.sessionStorage.setItem("token", data.token);
     window.location.href = "index.html";
   } catch (error) {
-    document.querySelector("#login-form form").id = "login-error";
+    document.querySelector("#login-form form").classList.add("login-error");
   }
 }
 
@@ -44,6 +44,6 @@ document.querySelector("#login-form form").addEventListener("submit", (e) => {
 
 Object.values(logsInput).forEach((input) => {
   input.addEventListener("click", () => {             
-    document.querySelector("#login-form form").removeAttribute("id");
+    document.querySelector("#login-form form").classList.remove("login-error");
   });
 });

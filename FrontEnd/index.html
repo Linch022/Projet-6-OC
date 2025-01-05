@@ -30,7 +30,7 @@
 </header>
 <main>
 	<div id="modal-overlay" class="close-modal"></div>
-	<aside id="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" class="admin-option">
+	<div id="modal" aria-hidden="true" role="dialog" class="admin-option">
 		<button id="close-modal-button" class="close-modal"><i class="fa-solid fa-xmark"></i></button>
 		<div id="modal-gallery-container">
 			<p class="modal-title">Galerie photo</p>
@@ -43,7 +43,6 @@
 			<p class="modal-title">Ajout photo</p>
 			<form id="photo-upload-form">
 				<div class="photo-upload-container">
-					<img src="" alt="Aperçu de l'image" id="image-preview">
 					<i class="fa-regular fa-image"></i>
 					<label for="photo-input" id="photo-upload-button">
 						+ Ajouter Photo
@@ -54,17 +53,16 @@
 					<label for="photo-title" class="photo-inputs">Titre
 						<input type="text" id="photo-title" class="upload-inputs" required>
 					</label>
-					<label for="photo-category" class="photo-inputs">
+					<label class="photo-inputs" id="categories-label">
 						Catégorie
 						<i class="fa-solid fa-chevron-down"></i>
-						<select name="categories" id="photo-category" class="upload-inputs" required></select>
 					</label>
 					<hr>
 					<p id="add-text"><span id="add-success">Ajout pris en compte</span><span id="add-echec">Échec de l'ajout</span></p>
 					<input type="submit" value="Valider" id="submit-upload" disabled>
 			</form>
 		</div>
-	</aside>
+	</div>
 	<section id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">

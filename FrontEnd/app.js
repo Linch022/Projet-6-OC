@@ -278,8 +278,6 @@ document
     const formData = new FormData();
     formData.append("title", inputs[1].value);
     formData.append("image", inputs[0].files[0]);
-    console.log(inputs);
-
     formData.append(
       "category",
       inputs[2].selectedOptions[0].getAttribute("data-id")
